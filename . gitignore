@@ -3,4 +3,3 @@ build-iso/
 out/
 *.iso
 *.squashfs
-*.log
