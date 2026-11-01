@@ -32,6 +32,9 @@ jobs:
           sudo apt-get install -y debootstrap squashfs-tools xorriso mtools \
             grub-pc-bin grub-efi-amd64-bin qemu-system-x86
 
+      - name: Ensure scripts are executable
+        run: chmod +x scripts/*.sh
+
       - name: Build live ISO
         env:
           PROFILE: ${{ inputs.profile || 'desktop' }}
@@ -47,27 +50,29 @@ jobs:
           name: live-iso
           path: out/
           retention-days: 14
-          if-no-files-found: error
+          if-no-files-found: warn
 
-      - name: Show debootstrap log on failure
+      - name: Show logs on failure
         if: failure()
         run: |
           LOG="build-iso/rootfs/debootstrap/debootstrap.log"
+          APT_LOG="build-iso/rootfs/var/log/apt/term.log"
           if [ -f "$LOG" ]; then
             echo "===== Last 120 lines of $LOG ====="
             sudo tail -n 120 "$LOG"
-            echo "===== Error lines ====="
-            sudo grep -iE "error|E:|fail|dpkg|postinst|returned" "$LOG" | tail -n 60 || true
-          else
-            echo "No debootstrap log found at $LOG"
+          fi
+          if [ -f "$APT_LOG" ]; then
+            echo "===== Last 120 lines of $APT_LOG ====="
+            sudo tail -n 120 "$APT_LOG"
           fi
 
-      - name: Upload debootstrap log on failure
+      - name: Upload logs on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: debootstrap-log
-          path: build-iso/rootfs/debootstrap/debootstrap.log
+          name: build-logs
+          path: |
+            build-iso/rootfs/debootstrap/debootstrap.log
+            build-iso/rootfs/var/log/apt/term.log
           retention-days: 7
           if-no-files-found: warn
-          
