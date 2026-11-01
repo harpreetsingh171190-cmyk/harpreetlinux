@@ -18,6 +18,7 @@ if [ "$PROFILE" = "desktop" ]; then
     ALL_PACKAGES="${ALL_PACKAGES},${DESKTOP_PACKAGES}"
 fi
 
+# Convert comma-separated package list to space-separated for apt-get
 APT_PACKAGES="$(echo "$ALL_PACKAGES" | tr ',' ' ')"
 
 echo "Building live ISO for ${NAME} (${SUITE}, profile: ${PROFILE})"
@@ -32,13 +33,14 @@ cleanup() {
 }
 trap cleanup EXIT
 
-# Stage 1: Bootstrap minimal base system.
+# Stage 1: Bootstrap ONLY the minimal base system (no extra packages yet)
 sudo debootstrap \
     --variant=minbase \
     --components=main,contrib,non-free,non-free-firmware \
     "$SUITE" "$ROOTFS" "$MIRROR"
 
-sudo cp /etc/resolv.conf "$ROOTFS/etc/resolv.conf"
+# Copy DNS config (dereference symlink from Ubuntu systemd-resolved)
+sudo cp -L /etc/resolv.conf "$ROOTFS/etc/resolv.conf"
 
 cat <<EOF | sudo tee "$ROOTFS/etc/apt/sources.list" > /dev/null
 deb $MIRROR $SUITE main contrib non-free non-free-firmware
@@ -50,18 +52,18 @@ sudo mount --bind /dev "$ROOTFS/dev"
 sudo mkdir -p "$ROOTFS/dev/pts"
 sudo mount --bind /dev/pts "$ROOTFS/dev/pts"
 
-# Block service starts inside chroot during package installation.
+# Block service starts inside chroot so network-manager and lightdm do not fail
 sudo tee "$ROOTFS/usr/sbin/policy-rc.d" > /dev/null << 'POLICY'
 #!/bin/sh
 exit 101
 POLICY
 sudo chmod +x "$ROOTFS/usr/sbin/policy-rc.d"
 
-# Stage 2: Install kernel, live-boot, and desktop packages via APT.
+# Stage 2: Install kernel, network-manager, live-boot, and desktop via APT
 sudo chroot "$ROOTFS" /bin/sh -c "
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
-    apt-get install -y --no-install-recommends $APT_PACKAGES
+    apt-get install -y $APT_PACKAGES
     update-initramfs -u -k all
     apt-get clean
     rm -rf /var/lib/apt/lists/*
@@ -69,13 +71,13 @@ sudo chroot "$ROOTFS" /bin/sh -c "
 
 sudo rm -f "$ROOTFS/usr/sbin/policy-rc.d"
 
-# Apply custom overlay files.
+# Copy custom overlay files
 sudo cp -a "$ROOT/overlay/." "$ROOTFS/"
 
-# Unmount virtual filesystems BEFORE creating squashfs image.
+# Unmount virtual filesystems BEFORE mksquashfs runs
 cleanup
 
-# Find the newest kernel and its initramfs.
+# Find the newest kernel and its initramfs
 KERNEL="$(sudo ls "$ROOTFS/boot" | grep '^vmlinuz-' | sort -V | tail -1)"
 INITRD="$(sudo ls "$ROOTFS/boot" | grep '^initrd.img-' | sort -V | tail -1)"
 if [ -z "$KERNEL" ] || [ -z "$INITRD" ]; then
@@ -85,7 +87,7 @@ fi
 sudo cp "$ROOTFS/boot/$KERNEL" "$ISO_DIR/live/vmlinuz"
 sudo cp "$ROOTFS/boot/$INITRD" "$ISO_DIR/live/initrd.img"
 
-# Pack the root filesystem as the live system.
+# Pack the root filesystem as the live system
 sudo mksquashfs "$ROOTFS" "$ISO_DIR/live/filesystem.squashfs" -comp xz -noappend
 
 cat > "$ISO_DIR/boot/grub/grub.cfg" << CFG
