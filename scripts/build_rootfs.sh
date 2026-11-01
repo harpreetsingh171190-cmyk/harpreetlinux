@@ -18,6 +18,7 @@ mkdir -p "$WORK" "$OUT"
 
 sudo debootstrap \
     --variant=minbase \
+    --components=main,contrib,non-free,non-free-firmware \
     --include="$PACKAGES" \
     "$SUITE" "$ROOTFS" "$MIRROR"
 
