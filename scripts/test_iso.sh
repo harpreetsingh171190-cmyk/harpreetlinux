@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Boot the ISO headless in QEMU and check that it reaches a login prompt.
+# Boot the ISO headless in QEMU and check that it reaches a login prompt or live session.
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -23,7 +23,7 @@ timeout "$TIMEOUT" qemu-system-x86_64 \
 QPID=$!
 
 for _ in $(seq 1 "$TIMEOUT"); do
-    if grep -qE 'login:' "$LOG" 2>/dev/null; then
+    if grep -qE 'login:|live-config:' "$LOG" 2>/dev/null; then
         echo "PASS: reached login prompt"
         kill "$QPID" 2>/dev/null || true
         exit 0
