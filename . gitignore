@@ -1,0 +1,6 @@
+build/
+build-iso/
+out/
+*.iso
+*.squashfs
+cache/
