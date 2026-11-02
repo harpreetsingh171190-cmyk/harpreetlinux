@@ -25,9 +25,15 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            debootstrap debian-archive-keyring squashfs-tools xorriso mtools \
+            debootstrap debian-archive-keyring squashfs-tools xorriso mtools zstd \
             grub-pc-bin grub-efi-amd64-bin grub-common qemu-system-x86
           test -s /usr/share/keyrings/debian-archive-keyring.gpg
+      - name: Restore base system cache
+        uses: actions/cache@v4
+        with:
+          path: cache
+          key: rootfs-${{ inputs.profile || 'minimal' }}-v1-${{ hashFiles('distro.conf') }}
+
       - name: Build ISO
         env:
           PROFILE: ${{ inputs.profile || 'minimal' }}
