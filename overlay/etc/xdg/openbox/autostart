@@ -1,0 +1,5 @@
+# Started by Openbox when the desktop session begins.
+# Panel with clock, menu and taskbar.
+tint2 &
+# Wi-Fi tray icon.
+nm-applet &
