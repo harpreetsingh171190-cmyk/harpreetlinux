@@ -1,0 +1,7 @@
+# AI and machine learning: Python data science and Jupyter notebooks
+python3-numpy
+python3-pandas
+python3-scipy
+python3-sklearn
+python3-matplotlib
+jupyter-notebook

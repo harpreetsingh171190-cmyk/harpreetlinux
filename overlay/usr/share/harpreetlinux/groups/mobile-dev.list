@@ -1,0 +1,3 @@
+# Android development tools (skipped if not in Debian)
+android-sdk
+android-tools-adb

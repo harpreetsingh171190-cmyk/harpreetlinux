@@ -1,0 +1,7 @@
+# Cloud and DevOps: containers, Kubernetes, infrastructure as code, AWS CLI
+ansible
+docker-compose
+podman
+kubernetes-client
+helm
+awscli

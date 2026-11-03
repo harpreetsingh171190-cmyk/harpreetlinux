@@ -1,0 +1,12 @@
+# Ethical hacking: scanners, web testing, password tools, packet capture
+nmap
+wireshark
+zaproxy
+sqlmap
+nikto
+gobuster
+ffuf
+hydra
+john
+hashcat
+seclists
