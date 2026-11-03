@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux Welcome
+Comment=Show the welcome window
+Exec=/usr/local/bin/harpreetlinux-welcome --force
+Icon=harpreetlinux
+Categories=System;
