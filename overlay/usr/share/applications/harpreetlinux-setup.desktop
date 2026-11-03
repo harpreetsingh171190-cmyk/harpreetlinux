@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux Setup
+Name[pa]=ਹਰਪ੍ਰੀਤ ਲੀਨਕਸ ਸੈੱਟਅੱਪ
+Comment=Install tool groups
+Comment[pa]=ਟੂਲ ਗਰੁੱਪ ਇੰਸਟਾਲ ਕਰੋ
+Exec=/usr/local/bin/harpreetlinux-setup
+Terminal=true
+Icon=harpreetlinux
+Categories=System;
