@@ -1,8 +1,0 @@
-#!/bin/sh
-# Runs once at the first login: adds the Flathub app store for this user.
-MARK="$HOME/.config/harpreetlinux/flathub-added"
-[ -f "$MARK" ] && exit 0
-command -v flatpak >/dev/null 2>&1 || exit 0
-if flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo; then
-  mkdir -p "$(dirname "$MARK")" && touch "$MARK"
-fi
