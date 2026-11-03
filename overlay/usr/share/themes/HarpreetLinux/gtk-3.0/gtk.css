@@ -1,0 +1,14 @@
+/* HarpreetLinux: Arc-Dark with softer corners, roomier spacing and an indigo/saffron accent. */
+@import url("file:///usr/share/themes/Arc-Dark/gtk-3.0/gtk.css");
+
+@define-color accent_color #4f46e5;
+@define-color saffron #f59e0b;
+
+window { border-radius: 10px; }
+button, entry, spinbutton, combobox button, menu, menuitem, tooltip { border-radius: 8px; }
+headerbar { padding: 4px 10px; min-height: 36px; }
+menu, popover { border-radius: 10px; padding: 6px; }
+menuitem { padding: 6px 12px; }
+button { transition: 150ms ease-in-out; }
+button.suggested-action, progressbar progress, switch:checked { background-color: @accent_color; }
+selection, *:selected { background-color: @accent_color; }
