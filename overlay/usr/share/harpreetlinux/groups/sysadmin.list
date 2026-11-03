@@ -1,7 +1,0 @@
-# Server and sysadmin tools: intrusion blocking, web server, databases, shells
-fail2ban
-nginx
-sqlite3
-postgresql-client
-redis-tools
-mosh
