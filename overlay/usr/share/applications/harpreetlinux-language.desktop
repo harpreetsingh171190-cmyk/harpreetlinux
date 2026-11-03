@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Change language
+Name[pa]=ਭਾਸ਼ਾ ਬਦਲੋ
+Comment=Switch between English and Punjabi
+Comment[pa]=ਅੰਗਰੇਜ਼ੀ ਅਤੇ ਪੰਜਾਬੀ ਵਿਚਕਾਰ ਬਦਲੋ
+Exec=/usr/local/bin/harpreetlinux-language
+Icon=preferences-desktop-locale
+Categories=Settings;
