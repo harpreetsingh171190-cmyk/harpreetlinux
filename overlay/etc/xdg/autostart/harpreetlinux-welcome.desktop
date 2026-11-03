@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux Welcome
+Exec=/usr/local/bin/harpreetlinux-welcome
+Icon=harpreetlinux
+X-GNOME-Autostart-enabled=true

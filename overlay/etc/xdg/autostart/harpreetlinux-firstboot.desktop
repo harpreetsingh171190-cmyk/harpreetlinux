@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux first start
+Exec=/usr/local/bin/harpreetlinux-firstboot
+X-GNOME-Autostart-enabled=true
