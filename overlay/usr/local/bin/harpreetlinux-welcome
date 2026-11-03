@@ -1,0 +1,24 @@
+#!/bin/sh
+# Shows a short welcome window at the first login. Run it again any time from the menu.
+MARK="$HOME/.config/harpreetlinux/welcome-shown"
+if [ "${1:-}" != "--force" ] && [ -f "$MARK" ]; then exit 0; fi
+command -v zenity >/dev/null 2>&1 || exit 0
+mkdir -p "$(dirname "$MARK")" && touch "$MARK"
+
+TEXT="Thank you for using HarpreetLinux.
+
+Choose tool groups (gaming, multimedia, design, development, security and more) from the setup menu. An internet connection is needed."
+
+out=$(zenity --question --width=460 --title="Welcome to HarpreetLinux" \
+  --window-icon=/usr/share/pixmaps/harpreetlinux-logo.png \
+  --icon=/usr/share/pixmaps/harpreetlinux-logo.png \
+  --text="$TEXT" \
+  --ok-label="Install tool groups" --cancel-label="Close" \
+  --extra-button="Open software store")
+rc=$?
+
+if [ "$rc" -eq 0 ]; then
+  exec x-terminal-emulator -e /usr/local/bin/harpreetlinux-setup
+elif [ "$out" = "Open software store" ]; then
+  exec gnome-software
+fi
