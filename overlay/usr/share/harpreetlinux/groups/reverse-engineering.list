@@ -1,0 +1,7 @@
+# Binary and mobile analysis: disassembly, decompilation, APK tools
+radare2
+ghidra
+binutils
+apktool
+jadx
+android-tools-adb

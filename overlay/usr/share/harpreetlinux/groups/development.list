@@ -1,0 +1,13 @@
+# Programming: C/C++, Go, Node.js, Python, Java, Docker, build tools
+build-essential
+gdb
+git
+cmake
+clang
+golang-go
+nodejs
+npm
+python3-pip
+python3-venv
+default-jdk
+docker.io
