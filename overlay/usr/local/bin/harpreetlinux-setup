@@ -2,15 +2,23 @@
 # HarpreetLinux post-install setup: pick tool groups, then install them from the internet.
 set -u
 GROUP_DIR=/usr/share/harpreetlinux/groups
+I18N_DIR=/usr/share/harpreetlinux/i18n
+# shellcheck disable=SC1091
+. /usr/share/harpreetlinux/i18n.sh
 items=()
 for f in "$GROUP_DIR"/*.list; do
   name="$(basename "$f" .list)"
   desc="$(head -n1 "$f" | sed 's/^# *//')"
+  if [[ "$HL_LANG" == pa && -f "$I18N_DIR/pa-groups.txt" ]]; then
+    pa_desc="$(grep -m1 "^${name}|" "$I18N_DIR/pa-groups.txt" | cut -d'|' -f2-)"
+    [[ -n "$pa_desc" ]] && desc="$pa_desc"
+  fi
   items+=(FALSE "$name" "$desc")
 done
-choice=$(zenity --list --checklist --separator='|' --title="HarpreetLinux Setup" \
-  --text="Choose tool groups to install. Internet is needed." \
-  --column=Install --column=Group --column=Description --width=760 --height=460 "${items[@]}") || exit 0
+choice=$(zenity --list --checklist --separator='|' --title="$HL_SETUP_TITLE" \
+  --text="$HL_SETUP_TEXT" \
+  --column="$HL_COL_INSTALL" --column="$HL_COL_GROUP" --column="$HL_COL_DESC" \
+  --width=860 --height=520 "${items[@]}") || exit 0
 IFS='|' read -ra selected <<< "$choice"
 pkgs=()
 for g in "${selected[@]}"; do

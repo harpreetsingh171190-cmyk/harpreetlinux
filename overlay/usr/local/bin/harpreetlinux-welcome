@@ -4,21 +4,18 @@ MARK="$HOME/.config/harpreetlinux/welcome-shown"
 if [ "${1:-}" != "--force" ] && [ -f "$MARK" ]; then exit 0; fi
 command -v zenity >/dev/null 2>&1 || exit 0
 mkdir -p "$(dirname "$MARK")" && touch "$MARK"
+. /usr/share/harpreetlinux/i18n.sh
 
-TEXT="Thank you for using HarpreetLinux.
-
-Choose tool groups (gaming, multimedia, design, development, security and more) from the setup menu. An internet connection is needed."
-
-out=$(zenity --question --width=460 --title="Welcome to HarpreetLinux" \
+out=$(zenity --question --width=460 --title="$HL_WELCOME_TITLE" \
   --window-icon=/usr/share/pixmaps/harpreetlinux-logo.png \
   --icon=/usr/share/pixmaps/harpreetlinux-logo.png \
-  --text="$TEXT" \
-  --ok-label="Install tool groups" --cancel-label="Close" \
-  --extra-button="Open software store")
+  --text="$HL_WELCOME_TEXT" \
+  --ok-label="$HL_WELCOME_OK" --cancel-label="$HL_WELCOME_CLOSE" \
+  --extra-button="$HL_WELCOME_STORE")
 rc=$?
 
 if [ "$rc" -eq 0 ]; then
   exec x-terminal-emulator -e /usr/local/bin/harpreetlinux-setup
-elif [ "$out" = "Open software store" ]; then
+elif [ "$out" = "$HL_WELCOME_STORE" ]; then
   exec gnome-software
 fi
