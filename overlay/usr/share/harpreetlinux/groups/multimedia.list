@@ -1,0 +1,18 @@
+# Multimedia: video editing, audio production, screen recording, players
+mpv
+vlc
+obs-studio
+kdenlive
+shotcut
+openshot-qt
+handbrake
+audacity
+ardour
+lmms
+mkvtoolnix-gui
+simplescreenrecorder
+yt-dlp
+cheese
+easytag
+v4l-utils
+gstreamer1.0-plugins-ugly

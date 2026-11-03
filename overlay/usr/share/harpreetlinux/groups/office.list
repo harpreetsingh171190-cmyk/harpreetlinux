@@ -1,0 +1,20 @@
+# Office: full LibreOffice with Punjabi support, PDF tools, e-books, mail
+libreoffice-writer
+libreoffice-calc
+libreoffice-impress
+libreoffice-draw
+libreoffice-math
+libreoffice-base
+libreoffice-gtk3
+libreoffice-l10n-pa-in
+hunspell-en-us
+thunderbird
+evince
+pdfarranger
+xournalpp
+simple-scan
+calibre
+zim
+gnucash
+filezilla
+transmission-gtk

@@ -1,0 +1,22 @@
+# Electronics and IoT: Arduino, KiCad, ESP32, microcontroller toolchains, logic analyzers
+arduino
+kicad
+fritzing
+esptool
+avrdude
+gcc-avr
+avr-libc
+gcc-arm-none-eabi
+openocd
+stlink-tools
+dfu-util
+flashrom
+minicom
+picocom
+python3-serial
+pulseview
+sigrok-cli
+gtkwave
+iverilog
+ngspice
+gerbv

@@ -1,0 +1,11 @@
+# Writing and LaTeX: LaTeX with Unicode and Indic fonts, Pandoc, editors
+texlive-latex-extra
+texlive-xetex
+texlive-lang-other
+texlive-fonts-recommended
+texlive-science
+texstudio
+lyx
+pandoc
+ghostwriter
+fonts-noto-core

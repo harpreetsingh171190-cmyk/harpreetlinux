@@ -1,0 +1,20 @@
+# Data science: Python stack, Jupyter, R, SQL databases and CSV tools
+python3-seaborn
+python3-statsmodels
+python3-sympy
+python3-openpyxl
+python3-sqlalchemy
+python3-bs4
+python3-requests
+python3-ipykernel
+jupyter-notebook
+jupyter-nbconvert
+r-base
+r-cran-ggplot2
+r-cran-dplyr
+sqlite3
+sqlitebrowser
+postgresql
+postgresql-client
+csvkit
+visidata
