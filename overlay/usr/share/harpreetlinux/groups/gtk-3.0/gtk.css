@@ -1,0 +1,9 @@
+/* HarpreetLinux: softer corners and roomier spacing on top of Arc-Dark. */
+window { border-radius: 10px; }
+button, entry, spinbutton, combobox button, menu, menuitem, tooltip {
+  border-radius: 8px;
+}
+headerbar { padding: 4px 10px; min-height: 36px; }
+menu, popover { border-radius: 10px; padding: 6px; }
+menuitem { padding: 6px 12px; }
+button { transition: 150ms ease-in-out; }
