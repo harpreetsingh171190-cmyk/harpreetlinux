@@ -1,0 +1,10 @@
+# Punjabi: fonts, phonetic typing, browser and office language packs
+fonts-lohit-guru
+fonts-noto-core
+ibus
+ibus-m17n
+im-config
+firefox-esr-l10n-pa-in
+thunderbird-l10n-pa-in
+libreoffice-l10n-pa-in
+libreoffice-gtk3
