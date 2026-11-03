@@ -1,0 +1,8 @@
+PRETTY_NAME="HarpreetLinux 0.2"
+NAME="HarpreetLinux"
+VERSION_ID="0.2"
+VERSION="0.2"
+VERSION_CODENAME=trixie
+ID=harpreetlinux
+ID_LIKE=debian
+LOGO=harpreetlinux
