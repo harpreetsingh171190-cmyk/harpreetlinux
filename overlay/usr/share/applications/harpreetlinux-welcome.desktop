@@ -1,7 +1,9 @@
 [Desktop Entry]
 Type=Application
 Name=HarpreetLinux Welcome
+Name[pa]=ਹਰਪ੍ਰੀਤ ਲੀਨਕਸ ਸੁਆਗਤ
 Comment=Show the welcome window
+Comment[pa]=ਸੁਆਗਤ ਵਿੰਡੋ ਦਿਖਾਓ
 Exec=/usr/local/bin/harpreetlinux-welcome --force
 Icon=harpreetlinux
 Categories=System;
