@@ -14,3 +14,6 @@
 
 ## Next iterations (feedback driven)
 - Add groups and fixes as the builds are tested.
+## Tested
+- Dock, window buttons and setup menu: working (user test, USB boot).
+- Tool groups: 12 total, installed from the setup menu.
