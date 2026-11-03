@@ -1,0 +1,31 @@
+# HarpreetLinux GRUB theme
+desktop-image: "background.png"
+desktop-color: "#0f172a"
+title-text: ""
+terminal-font: "Unifont Regular 16"
+
++ boot_menu {
+  left = 50%-260
+  top = 42%
+  width = 520
+  height = 34%
+  item_font = "Unifont Regular 16"
+  item_color = "#c7d2fe"
+  selected_item_color = "#ffffff"
+  item_height = 34
+  item_padding = 10
+  item_spacing = 6
+  selected_item_pixmap_style = "select_*.png"
+  scrollbar = false
+}
+
++ label {
+  id = "__timeout__"
+  left = 50%-260
+  top = 90%
+  width = 520
+  align = "center"
+  font = "Unifont Regular 16"
+  color = "#f59e0b"
+  text = "Starting in %d seconds"
+}
