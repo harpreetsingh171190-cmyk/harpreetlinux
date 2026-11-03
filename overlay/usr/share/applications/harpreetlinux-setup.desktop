@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux Setup
+Comment=Install tool groups
+Exec=/usr/local/bin/harpreetlinux-setup
+Terminal=true
+Icon=system-software-install
+Categories=System;
