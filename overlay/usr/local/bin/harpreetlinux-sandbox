@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Run a program in a Firejail sandbox (isolated home, optional no network, no sound, ...).
+command -v zenity >/dev/null 2>&1 || exit 0
+# shellcheck disable=SC1091
+. /usr/share/harpreetlinux/i18n.sh
+export SUDO_ASKPASS=/usr/local/bin/harpreetlinux-askpass
+ICON=/usr/share/pixmaps/harpreetlinux-logo.png
+
+if ! command -v firejail >/dev/null 2>&1; then
+  zenity --question --width=420 --title="$HL_SB_TITLE" --window-icon="$ICON" --text="$HL_NEED_Q" || exit 0
+  sudo -A -v || exit 0
+  x-terminal-emulator -e sh -c 'sudo -A apt-get update && sudo -A apt-get install -y firejail firejail-profiles' || true
+  command -v firejail >/dev/null 2>&1 || { zenity --error --text="$HL_NEED_FAIL"; exit 1; }
+fi
+
+cmd=$(zenity --entry --width=460 --title="$HL_SB_TITLE" --window-icon="$ICON" --text="$HL_SB_CMD" --entry-text="firefox-esr") || exit 0
+[ -n "$cmd" ] || exit 0
+choice=$(zenity --list --checklist --separator=' ' --title="$HL_SB_TITLE" --window-icon="$ICON" --text="$HL_SB_TEXT" \
+  --column="" --column="id" --column="$HL_SB_COL" --hide-column=2 --print-column=2 --width=520 --height=380 \
+  TRUE private "$HL_SB_PRIVATE" \
+  TRUE strict "$HL_SB_STRICT" \
+  FALSE nonet "$HL_SB_NONET" \
+  FALSE nosound "$HL_SB_NOSOUND" \
+  FALSE no3d "$HL_SB_NO3D") || exit 0
+
+flags=()
+for c in $choice; do
+  case "$c" in
+    private) flags+=(--private) ;;
+    strict)  flags+=(--caps.drop=all --seccomp --nonewprivs) ;;
+    nonet)   flags+=(--net=none) ;;
+    nosound) flags+=(--nosound) ;;
+    no3d)    flags+=(--no3d) ;;
+  esac
+done
+# shellcheck disable=SC2086
+firejail "${flags[@]}" $cmd >/dev/null 2>&1 &
+sleep 2
+zenity --info --width=380 --title="$HL_SB_TITLE" --window-icon="$ICON" --text="$(printf "$HL_SB_STARTED" "$cmd")"

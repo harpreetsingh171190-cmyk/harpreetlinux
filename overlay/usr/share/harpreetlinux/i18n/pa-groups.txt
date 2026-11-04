@@ -19,6 +19,7 @@ privacy|ਪਰਦੇਦਾਰੀ ਅਤੇ ਗੁਮਨਾਮੀ: Tor, I2P, ਇ�
 productivity|ਉਤਪਾਦਕਤਾ: ਪਾਸਵਰਡ ਮੈਨੇਜਰ, ਨੋਟਸ, ਸਕ੍ਰੀਨਸ਼ਾਟ, ਕਲਿੱਪਬੋਰਡ, ਫਾਈਲ ਸਿੰਕ
 punjabi|ਪੰਜਾਬੀ: ਫੌਂਟ, ਫੋਨੈਟਿਕ ਟਾਈਪਿੰਗ, ਬ੍ਰਾਊਜ਼ਰ ਅਤੇ ਦਫ਼ਤਰ ਲਈ ਪੰਜਾਬੀ ਭਾਸ਼ਾ ਪੈਕ
 reverse-engineering|ਬਾਈਨਰੀ ਅਤੇ ਮੋਬਾਈਲ ਵਿਸ਼ਲੇਸ਼ਣ: ਡਿਸਅਸੈਂਬਲੀ, ਡੀਕੰਪਾਈਲੇਸ਼ਨ, APK ਟੂਲ
+sandboxing|ਸੈਂਡਬਾਕਸ: ਖ਼ਤਰਨਾਕ ਪ੍ਰੋਗਰਾਮ ਅਲੱਗ ਚਲਾਓ (Firejail, Bubblewrap, AppArmor, Flatpak)
 security-defense|ਸੁਰੱਖਿਆ ਅਤੇ ਬਚਾਅ: ਸਿਸਟਮ ਆਡਿਟ, ਰੂਟਕਿਟ ਜਾਂਚ, ਐਂਟੀਵਾਇਰਸ, ਘੁਸਪੈਠ ਰੋਕ, ਫਾਈਲ ਇੰਟੈਗ੍ਰਿਟੀ
 security-ethical|ਐਥੀਕਲ ਹੈਕਿੰਗ: ਸਕੈਨਰ, ਵੈੱਬ ਟੈਸਟਿੰਗ, ਪਾਸਵਰਡ ਟੂਲ, ਪੈਕੇਟ ਕੈਪਚਰ
 security-passwords|ਪਾਸਵਰਡ ਆਡਿਟ: ਵਰਡਲਿਸਟ ਬਣਾਉਣ ਅਤੇ ਟੈਸਟ ਕਰਨ ਵਾਲੇ ਟੂਲ (ਸਿਰਫ਼ ਇਜਾਜ਼ਤ ਵਾਲੇ ਸਿਸਟਮਾਂ ਉੱਤੇ)
@@ -26,6 +27,7 @@ security-recon|ਨੈੱਟਵਰਕ ਰੈਕੀ ਅਤੇ ਟ੍ਰੈਫਿ�
 security-web-extra|ਹੋਰ ਵੈੱਬ ਟੈਸਟਿੰਗ ਟੂਲ (ਸਿਰਫ਼ ਆਪਣੀਆਂ ਜਾਂ ਇਜਾਜ਼ਤ ਵਾਲੀਆਂ ਸਾਈਟਾਂ ਉੱਤੇ)
 sysadmin|ਸਰਵਰ ਅਤੇ ਸਿਸਐਡਮਿਨ ਟੂਲ: ਘੁਸਪੈਠ ਰੋਕਥਾਮ, ਵੈੱਬ ਸਰਵਰ, ਡਾਟਾਬੇਸ, ਸ਼ੈੱਲ
 toolbox-containers|ਟੂਲਬਾਕਸ ਕੰਟੇਨਰ: Podman, Distrobox ਨਾਲ Fedora, Ubuntu, Arch ਆਦਿ ਅੰਦਰ ਡਿਵੈਲਪਮੈਂਟ
+virtualization|ਵਰਚੁਅਲ ਮਸ਼ੀਨਾਂ: QEMU/KVM, virt-manager, VirtualBox
 web-dev|ਵੈੱਬ ਡਿਵੈਲਪਮੈਂਟ: PHP, Ruby, SQLite, API ਟੈਸਟਿੰਗ, nginx, Chromium
 wireless|Wi-Fi ਟੈਸਟਿੰਗ: ਮਾਨੀਟਰ ਮੋਡ, WPA ਆਡਿਟ, Wi-Fi ਸਕੈਨ (ਸਿਰਫ਼ ਆਪਣੇ ਨੈੱਟਵਰਕ ਉੱਤੇ ਵਰਤੋ)
 writing-latex|ਲਿਖਤ ਅਤੇ LaTeX: ਯੂਨੀਕੋਡ ਤੇ ਭਾਰਤੀ ਫੌਂਟਾਂ ਨਾਲ LaTeX, Pandoc, ਐਡੀਟਰ

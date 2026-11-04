@@ -1,5 +1,13 @@
 # HarpreetLinux progress log
 
+## Iteration 11: rolling release, virtualization, sandboxing, Budgie
+- "HarpreetLinux Rolling Release": switches an installed system from Debian stable (trixie) to Debian testing (continuous updates) after a clear warning; saves the old sources.list as sources.list.stable-backup; when already rolling it offers a one-click full update. Going back to stable is not supported (not safe). Modular installation already exists through the setup groups.
+- New groups: virtualization (QEMU/KVM, virt-manager, libvirt, OVMF, swtpm, VirtualBox if Debian offers it) and sandboxing (Firejail, Bubblewrap, AppArmor profiles, Flatpak). The setup menu adds you to the libvirt and kvm groups after installing virtualization.
+- "HarpreetLinux Sandbox": runs a program in Firejail with options (temporary home, strict, no network, no sound, no 3D).
+- New desktop flavour: Budgie (FLAVOR=budgie, also in the workflow list). EXPERIMENTAL: package names (budgie-desktop, gnome-terminal, nautilus, gnome-control-center) and the session name were not checked in a build; the other flavours (xfce, lxqt, mate, gnome, kde) are unchanged.
+- The ISO itself stays on Debian stable; rolling is an opt-in switch after install.
+- VERSION_LABEL is now 0.7. Not tested in a real boot.
+
 ## Iteration 10: privacy, kernel hardening, bigger Security Edition
 - "HarpreetLinux Anon" (like Anonsurf): runs its own Tor instance and sends all traffic of the computer through it (nftables transparent proxy, Tor DNS). Kill switch: UDP, IPv6 and anything else that cannot go through Tor is blocked; local network stays reachable. Turn on/off, new identity, and a check against check.torproject.org. Nothing is saved across reboots. Installs tor and nftables on first use. It does not guarantee anonymity (the window says so).
 - privacy group now also has I2P (i2pd), age, gocryptfs, GnuPG, cryptsetup, mat2, Seahorse, nftables.

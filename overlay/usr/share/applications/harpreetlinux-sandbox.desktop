@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux Sandbox
+Name[pa]=ਹਰਪ੍ਰੀਤ ਲੀਨਕਸ ਸੈਂਡਬਾਕਸ
+Comment=Run a risky program in an isolated sandbox
+Comment[pa]=ਖ਼ਤਰਨਾਕ ਪ੍ਰੋਗਰਾਮ ਨੂੰ ਅਲੱਗ ਸੈਂਡਬਾਕਸ ਵਿੱਚ ਚਲਾਓ
+Exec=/usr/local/bin/harpreetlinux-sandbox
+Icon=security-medium
+Categories=System;Security;

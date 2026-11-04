@@ -1,0 +1,12 @@
+# Virtual machines: QEMU/KVM, virt-manager, VirtualBox (VirtualBox is skipped if Debian does not offer it)
+qemu-system-x86
+qemu-system-gui
+qemu-utils
+ovmf
+swtpm
+virt-manager
+libvirt-daemon-system
+libvirt-clients
+dnsmasq-base
+bridge-utils
+virtualbox

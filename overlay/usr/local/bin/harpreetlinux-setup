@@ -29,5 +29,9 @@ failed=()
 for p in "${pkgs[@]}"; do
   if sudo apt-get install -y --no-install-recommends "$p"; then echo "OK: $p"; else echo "SKIPPED: $p"; failed+=("$p"); fi
 done
+if [[ " ${selected[*]} " == *" virtualization "* ]]; then
+  sudo adduser "$USER" libvirt >/dev/null 2>&1; sudo adduser "$USER" kvm >/dev/null 2>&1
+  echo "Added you to the libvirt and kvm groups. Log out and in again to use virtual machines."
+fi
 echo; echo "Done. Skipped packages: ${failed[*]:-none}"
 read -r -p "Press Enter to close."

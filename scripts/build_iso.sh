@@ -8,7 +8,7 @@ PROFILE="${PROFILE:-minimal}"
 FLAVOR="${FLAVOR:-xfce}"
 EDITION="${EDITION:-none}"
 [[ "$EDITION" == none || "$EDITION" == security ]] || { echo "EDITION must be none or security" >&2; exit 2; }
-case "$FLAVOR" in xfce|lxqt|mate|gnome|kde) ;; *) echo "FLAVOR must be xfce, lxqt, mate, gnome or kde" >&2; exit 2 ;; esac
+case "$FLAVOR" in xfce|lxqt|mate|gnome|kde|budgie) ;; *) echo "FLAVOR must be xfce, lxqt, mate, gnome, kde or budgie" >&2; exit 2 ;; esac
 [[ "$PROFILE" == minimal || "$PROFILE" == desktop ]] || { echo 'PROFILE must be minimal or desktop' >&2; exit 2; }
 
 WORK="$ROOT/build-iso"
@@ -70,6 +70,7 @@ build_base() {
     mate) DE_LIST="$DE_MATE" ;;
     gnome) DE_LIST="$DE_GNOME" ;;
     kde) DE_LIST="$DE_KDE" ;;
+    budgie) DE_LIST="$DE_BUDGIE" ;;
   esac
   case "$FLAVOR" in
     xfce) GUI_LIST="$GUI_XFCE" ;;
@@ -77,6 +78,7 @@ build_base() {
     mate) GUI_LIST="$GUI_MATE" ;;
     gnome) GUI_LIST="$GUI_GNOME" ;;
     kde) GUI_LIST="$GUI_KDE" ;;
+    budgie) GUI_LIST="$GUI_BUDGIE" ;;
   esac
   PACKAGES_TO_INSTALL="${PACKAGES},${ISO_PACKAGES},${COMMON_GUI},${DE_LIST},${TOOLS_PACKAGES},${GUI_LIST}"
   if [[ "$PROFILE" == desktop ]]; then PACKAGES_TO_INSTALL+=",${DESKTOP_PACKAGES}"; fi
@@ -146,7 +148,7 @@ sudo chmod 755 "$ROOTFS/usr/local/bin/harpreetlinux-setup"
 sudo chmod 755 "$ROOTFS/usr/local/bin/harpreetlinux-firstboot"
 sudo chmod 755 "$ROOTFS/usr/local/bin/harpreetlinux-welcome"
 sudo chmod 755 "$ROOTFS/usr/local/bin/harpreetlinux-language"
-for t in askpass backup backup-enable snapshot-apt firewall updates updates-config updates-check drivers drivers-install drivers-check cleanup sysinfo cockpit toolbox secaudit anon wifitest hardening; do
+for t in askpass backup backup-enable snapshot-apt firewall updates updates-config updates-check drivers drivers-install drivers-check cleanup sysinfo cockpit toolbox secaudit anon wifitest hardening rolling sandbox; do
   sudo chmod 755 "$ROOTFS/usr/local/bin/harpreetlinux-$t"
 done
 
@@ -202,6 +204,7 @@ case "$FLAVOR" in
   mate) SESSION=mate ;;
   gnome) SESSION=gnome ;;
   kde) SESSION=plasmax11 ;;
+  budgie) SESSION=budgie-desktop ;;
 esac
 sudo mkdir -p "$ROOTFS/etc/lightdm/lightdm.conf.d"
 printf "[Seat:*]\nautologin-user=user\nautologin-user-timeout=0\nuser-session=%s\n" "$SESSION" | sudo tee "$ROOTFS/etc/lightdm/lightdm.conf.d/50-autologin.conf" >/dev/null

@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Rolling release switch: moves this system from Debian stable to Debian testing (continuous updates).
+command -v zenity >/dev/null 2>&1 || exit 0
+# shellcheck disable=SC1091
+. /usr/share/harpreetlinux/i18n.sh
+export SUDO_ASKPASS=/usr/local/bin/harpreetlinux-askpass
+ICON=/usr/share/pixmaps/harpreetlinux-logo.png
+SRC=/etc/apt/sources.list
+
+if grep -Eq '^deb .* (testing|forky) ' "$SRC" 2>/dev/null; then
+  state="$HL_RL_IS_ROLLING"; rolling=1
+else
+  state="$HL_RL_IS_STABLE"; rolling=0
+fi
+
+if [ "$rolling" = 1 ]; then
+  zenity --question --width=440 --title="$HL_RL_TITLE" --window-icon="$ICON" \
+    --text="$state\n\n$HL_RL_UPDATE_Q" --ok-label="$HL_RL_UPDATE" || exit 0
+  sudo -A -v || exit 0
+  x-terminal-emulator -e sh -c 'sudo -A apt-get update && sudo -A apt-get full-upgrade; echo; echo "$0"; read -r _' "$HL_RL_PRESS"
+  exit 0
+fi
+
+zenity --question --width=520 --title="$HL_RL_TITLE" --window-icon="$ICON" \
+  --text="$state\n\n$HL_RL_TEXT" --ok-label="$HL_RL_SWITCH" || exit 0
+sudo -A -v || exit 0
+sudo -A cp -n "$SRC" "$SRC.stable-backup"
+printf 'deb http://deb.debian.org/debian testing main contrib non-free non-free-firmware\n' | sudo -A tee "$SRC" >/dev/null
+x-terminal-emulator -e sh -c 'sudo -A apt-get update && sudo -A apt-get full-upgrade; echo; echo "$0"; read -r _' "$HL_RL_PRESS"
+zenity --info --width=440 --text="$HL_RL_DONE"

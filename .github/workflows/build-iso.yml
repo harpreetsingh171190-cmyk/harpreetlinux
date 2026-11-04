@@ -10,7 +10,7 @@ on:
       flavor:
         description: 'Desktop flavour'
         type: choice
-        options: [xfce, lxqt, mate, gnome, kde]
+        options: [xfce, lxqt, mate, gnome, kde, budgie]
         default: xfce
 permissions:
   contents: read

@@ -1,0 +1,8 @@
+# Sandboxing: run risky programs isolated (Firejail, Bubblewrap, AppArmor profiles, Flatpak)
+firejail
+firejail-profiles
+bubblewrap
+apparmor-profiles
+apparmor-profiles-extra
+flatpak
+xdg-desktop-portal

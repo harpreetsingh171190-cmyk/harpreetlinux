@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux Rolling Release
+Name[pa]=ਹਰਪ੍ਰੀਤ ਲੀਨਕਸ ਰੋਲਿੰਗ ਰਿਲੀਜ਼
+Comment=Switch to continuous updates (Debian testing)
+Comment[pa]=ਲਗਾਤਾਰ ਅੱਪਡੇਟ ਵਾਲੇ ਮੋਡ ਵਿੱਚ ਜਾਓ (Debian testing)
+Exec=/usr/local/bin/harpreetlinux-rolling
+Icon=system-software-update
+Categories=System;
