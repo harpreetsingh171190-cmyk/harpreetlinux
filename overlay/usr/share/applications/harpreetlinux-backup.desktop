@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux Backup
+Name[pa]=ਹਰਪ੍ਰੀਤ ਲੀਨਕਸ ਬੈਕਅੱਪ
+Comment=Automatic system backups and restore
+Comment[pa]=ਆਟੋਮੈਟਿਕ ਸਿਸਟਮ ਬੈਕਅੱਪ ਅਤੇ ਬਹਾਲੀ
+Exec=/usr/local/bin/harpreetlinux-backup
+Icon=timeshift
+Categories=System;
