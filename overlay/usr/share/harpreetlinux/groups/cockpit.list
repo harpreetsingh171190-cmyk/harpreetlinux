@@ -1,0 +1,6 @@
+# Cockpit: manage the system, storage, network and containers from a browser
+cockpit
+cockpit-storaged
+cockpit-networkmanager
+cockpit-packagekit
+cockpit-podman
