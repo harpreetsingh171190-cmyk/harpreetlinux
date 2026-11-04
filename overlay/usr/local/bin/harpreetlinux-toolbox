@@ -1,0 +1,40 @@
+#!/bin/sh
+# Toolbox-style developer containers (like Fedora Toolbx) using distrobox and podman.
+command -v zenity >/dev/null 2>&1 || exit 0
+. /usr/share/harpreetlinux/i18n.sh
+export SUDO_ASKPASS=/usr/local/bin/harpreetlinux-askpass
+ICON=/usr/share/pixmaps/harpreetlinux-logo.png
+
+if ! command -v distrobox >/dev/null 2>&1 || ! command -v podman >/dev/null 2>&1; then
+  zenity --question --width=420 --title="$HL_TB_TITLE" --window-icon="$ICON" --text="$HL_NEED_Q" || exit 0
+  sudo -A -v || exit 0
+  x-terminal-emulator -e sh -c 'sudo -A apt-get update && sudo -A apt-get install -y podman distrobox uidmap slirp4netns' || true
+  command -v distrobox >/dev/null 2>&1 || { zenity --error --text="$HL_NEED_FAIL"; exit 1; }
+fi
+
+existing=$(distrobox list 2>/dev/null | awk -F'|' 'NR>1 {gsub(/ /,"",$2); if ($2!="") print $2}')
+while :; do
+  act=$(zenity --list --radiolist --title="$HL_TB_TITLE" --window-icon="$ICON" --text="$HL_TB_TEXT" \
+    --column="" --column="id" --column="$HL_TB_ACT" --hide-column=2 --print-column=2 \
+    --width=520 --height=280 TRUE new "$HL_TB_NEW" FALSE enter "$HL_TB_ENTER") || exit 0
+  case "$act" in
+    new)
+      img=$(zenity --list --radiolist --title="$HL_TB_TITLE" --window-icon="$ICON" --text="$HL_TB_TEXT" \
+        --column="" --column="$HL_TB_COL" --width=420 --height=320 \
+        TRUE registry.fedoraproject.org/fedora-toolbox:latest \
+        FALSE docker.io/library/debian:stable \
+        FALSE docker.io/library/ubuntu:latest \
+        FALSE docker.io/library/archlinux:latest) || continue
+      name=$(zenity --entry --title="$HL_TB_TITLE" --text="$HL_TB_NAME_Q" --entry-text="dev") || continue
+      case "$name" in
+        ""|*[!A-Za-z0-9-]*) zenity --error --text="$HL_TB_BAD"; continue ;;
+      esac
+      exec x-terminal-emulator -e sh -c "distrobox create --yes --name '$name' --image '$img' && distrobox enter '$name'"
+      ;;
+    enter)
+      if [ -z "$existing" ]; then zenity --info --text="$HL_TB_NONE"; continue; fi
+      name=$(printf '%s\n' "$existing" | zenity --list --title="$HL_TB_TITLE" --column="$HL_TB_COL" --width=380 --height=300) || continue
+      exec x-terminal-emulator -e distrobox enter "$name"
+      ;;
+  esac
+done

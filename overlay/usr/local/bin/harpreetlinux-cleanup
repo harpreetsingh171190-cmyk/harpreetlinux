@@ -1,0 +1,39 @@
+#!/bin/sh
+# Disk cleanup window: pick what to clean (apt cache, unused packages, old logs, trash, thumbnails).
+command -v zenity >/dev/null 2>&1 || exit 0
+. /usr/share/harpreetlinux/i18n.sh
+export SUDO_ASKPASS=/usr/local/bin/harpreetlinux-askpass
+ICON=/usr/share/pixmaps/harpreetlinux-logo.png
+
+used() { df -B1 --output=used / | tail -n1 | tr -d ' '; }
+
+choice=$(zenity --list --checklist --separator=' ' --title="$HL_CL_TITLE" --window-icon="$ICON" \
+  --text="$HL_CL_TEXT" \
+  --column="" --column="id" --column="$HL_CL_COL" --hide-column=2 --print-column=2 \
+  --width=560 --height=380 \
+  TRUE apt "$HL_CL_APT" \
+  TRUE auto "$HL_CL_AUTO" \
+  TRUE logs "$HL_CL_LOGS" \
+  TRUE trash "$HL_CL_TRASH" \
+  TRUE thumbs "$HL_CL_THUMBS") || exit 0
+[ -n "$choice" ] || exit 0
+
+sudo -A -v || exit 0
+before=$(used)
+(
+  for c in $choice; do
+    case "$c" in
+      apt)    sudo -A apt-get clean ;;
+      auto)   sudo -A apt-get -y autoremove --purge ;;
+      logs)   sudo -A journalctl --vacuum-time=14d ;;
+      trash)  rm -rf "$HOME/.local/share/Trash/files/"* "$HOME/.local/share/Trash/info/"* 2>/dev/null ;;
+      thumbs) rm -rf "$HOME/.cache/thumbnails/"* 2>/dev/null ;;
+    esac
+  done
+) >/dev/null 2>&1
+after=$(used)
+
+freed=$(( (before - after) / 1048576 ))
+[ "$freed" -lt 0 ] && freed=0
+zenity --info --width=380 --title="$HL_CL_TITLE" --window-icon="$ICON" \
+  --text="$(printf "$HL_CL_DONE" "$freed")"

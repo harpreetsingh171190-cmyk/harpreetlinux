@@ -1,0 +1,39 @@
+#!/bin/sh
+# System information window: version, kernel, CPU, memory, disk, battery, temperature.
+command -v zenity >/dev/null 2>&1 || exit 0
+. /usr/share/harpreetlinux/i18n.sh
+ICON=/usr/share/pixmaps/harpreetlinux-logo.png
+
+os=$(. /etc/os-release 2>/dev/null; echo "${PRETTY_NAME:-HarpreetLinux}")
+kernel=$(uname -r)
+cpu=$(grep -m1 'model name' /proc/cpuinfo 2>/dev/null | cut -d: -f2- | sed 's/^ *//')
+cores=$(grep -c '^processor' /proc/cpuinfo 2>/dev/null)
+mem=$(free -h 2>/dev/null | awk '/^Mem:/ {print $3" / "$2}')
+disk=$(df -h / 2>/dev/null | awk 'NR==2 {print $3" / "$2" ("$5")"}')
+gpu=$(lspci 2>/dev/null | grep -i -m1 -E 'vga|3d|display' | cut -d: -f3- | sed 's/^ *//')
+up=$(uptime -p 2>/dev/null | sed 's/^up //')
+host=$(hostname)
+
+bat=""
+for b in /sys/class/power_supply/BAT*; do
+  [ -r "$b/capacity" ] && bat="$(cat "$b/capacity")% ($(cat "$b/status" 2>/dev/null))" && break
+done
+[ -n "$bat" ] || bat="$HL_SI_NONE"
+
+temp=""
+if command -v sensors >/dev/null 2>&1; then
+  temp=$(sensors 2>/dev/null | grep -m1 -E 'Package id 0|Tctl|temp1' | grep -o '[+][0-9.]*°C' | head -n1)
+fi
+[ -n "$temp" ] || temp="$HL_SI_NONE"
+
+zenity --info --width=520 --title="$HL_SI_TITLE" --window-icon="$ICON" --icon="$ICON" --no-markup \
+  --text="$HL_SI_OS: $os
+$HL_SI_HOST: $host
+$HL_SI_KERNEL: $kernel
+$HL_SI_CPU: ${cpu:-?} (${cores:-?})
+$HL_SI_GPU: ${gpu:-?}
+$HL_SI_MEM: ${mem:-?}
+$HL_SI_DISK: ${disk:-?}
+$HL_SI_BAT: $bat
+$HL_SI_TEMP: $temp
+$HL_SI_UP: ${up:-?}"

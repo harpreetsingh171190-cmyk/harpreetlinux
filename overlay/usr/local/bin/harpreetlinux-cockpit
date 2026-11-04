@@ -1,0 +1,20 @@
+#!/bin/sh
+# Opens Cockpit (web administration, as in Fedora Workstation). Offers to install it first if missing.
+command -v zenity >/dev/null 2>&1 || exit 0
+. /usr/share/harpreetlinux/i18n.sh
+export SUDO_ASKPASS=/usr/local/bin/harpreetlinux-askpass
+ICON=/usr/share/pixmaps/harpreetlinux-logo.png
+
+if ! dpkg -s cockpit >/dev/null 2>&1; then
+  zenity --question --width=420 --title="$HL_CK_TITLE" --window-icon="$ICON" --text="$HL_NEED_Q" || exit 0
+  sudo -A -v || exit 0
+  x-terminal-emulator -e sh -c 'sudo -A apt-get update && sudo -A apt-get install -y cockpit cockpit-storaged cockpit-networkmanager cockpit-packagekit cockpit-podman' \
+    || true
+  dpkg -s cockpit >/dev/null 2>&1 || { zenity --error --text="$HL_NEED_FAIL"; exit 1; }
+fi
+
+sudo -A -v || exit 0
+sudo -A systemctl enable --now cockpit.socket >/dev/null 2>&1 \
+  || { zenity --error --text="$HL_NEED_FAIL"; exit 1; }
+zenity --info --width=420 --title="$HL_CK_TITLE" --window-icon="$ICON" --text="$HL_CK_INFO"
+exec xdg-open https://localhost:9090
