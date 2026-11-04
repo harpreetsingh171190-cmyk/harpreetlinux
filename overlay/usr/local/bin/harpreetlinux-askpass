@@ -1,0 +1,4 @@
+#!/bin/sh
+# Password prompt for "sudo -A" (used by HarpreetLinux tools; no polkit agent needed).
+. /usr/share/harpreetlinux/i18n.sh
+exec zenity --password --title="$HL_AUTH_TITLE"

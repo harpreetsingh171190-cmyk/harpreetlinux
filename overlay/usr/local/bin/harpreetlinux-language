@@ -9,10 +9,11 @@ choice=$(zenity --list --radiolist --title="$HL_LANG_TITLE" --text="$HL_LANG_TEX
   "$( [ "$HL_LANG" = en ] && echo TRUE || echo FALSE )" en "English" \
   "$( [ "$HL_LANG" = pa ] && echo TRUE || echo FALSE )" pa "ਪੰਜਾਬੀ (Punjabi)") || exit 0
 
+export SUDO_ASKPASS=/usr/local/bin/harpreetlinux-askpass
 if [ "$choice" = pa ]; then
-  pkexec update-locale LANG=pa_IN.UTF-8 LANGUAGE=pa:en
+  sudo -A update-locale LANG=pa_IN.UTF-8 LANGUAGE=pa:en
 else
-  pkexec update-locale LANG=en_US.UTF-8 LANGUAGE
+  sudo -A update-locale LANG=en_US.UTF-8 LANGUAGE
 fi
 if [ $? -eq 0 ]; then
   zenity --info --width=360 --title="$HL_LANG_TITLE" --text="$HL_LANG_DONE"

@@ -11,11 +11,13 @@ out=$(zenity --question --width=460 --title="$HL_WELCOME_TITLE" \
   --icon=/usr/share/pixmaps/harpreetlinux-logo.png \
   --text="$HL_WELCOME_TEXT" \
   --ok-label="$HL_WELCOME_OK" --cancel-label="$HL_WELCOME_CLOSE" \
-  --extra-button="$HL_WELCOME_STORE")
+  --extra-button="$HL_WELCOME_STORE" --extra-button="$HL_WELCOME_BACKUP")
 rc=$?
 
 if [ "$rc" -eq 0 ]; then
   exec x-terminal-emulator -e /usr/local/bin/harpreetlinux-setup
 elif [ "$out" = "$HL_WELCOME_STORE" ]; then
   exec gnome-software
+elif [ "$out" = "$HL_WELCOME_BACKUP" ]; then
+  exec /usr/local/bin/harpreetlinux-backup
 fi
