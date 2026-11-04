@@ -1,0 +1,22 @@
+#!/bin/sh
+# Security self-check of this computer with Lynis (read-only audit, changes nothing).
+command -v zenity >/dev/null 2>&1 || exit 0
+. /usr/share/harpreetlinux/i18n.sh
+export SUDO_ASKPASS=/usr/local/bin/harpreetlinux-askpass
+ICON=/usr/share/pixmaps/harpreetlinux-logo.png
+
+if ! command -v lynis >/dev/null 2>&1; then
+  zenity --question --width=420 --title="$HL_SA_TITLE" --window-icon="$ICON" --text="$HL_NEED_Q" || exit 0
+  sudo -A -v || exit 0
+  x-terminal-emulator -e sh -c 'sudo -A apt-get update && sudo -A apt-get install -y lynis' || true
+  command -v lynis >/dev/null 2>&1 || { zenity --error --text="$HL_NEED_FAIL"; exit 1; }
+fi
+
+sudo -A -v || exit 0
+x-terminal-emulator -e sh -c 'sudo -A lynis audit system --quick --no-colors | tee /tmp/harpreetlinux-audit.txt; echo; echo "$0"; read -r _' "$HL_SA_PRESS"
+[ -f /var/log/lynis-report.dat ] || exit 0
+score=$(sudo -A grep -m1 '^hardening_index=' /var/log/lynis-report.dat 2>/dev/null | cut -d= -f2)
+warn=$(sudo -A grep -c '^warning\[\]=' /var/log/lynis-report.dat 2>/dev/null)
+sugg=$(sudo -A grep -c '^suggestion\[\]=' /var/log/lynis-report.dat 2>/dev/null)
+zenity --info --width=420 --title="$HL_SA_TITLE" --window-icon="$ICON" \
+  --text="$(printf "$HL_SA_DONE" "${score:-?}" "${warn:-0}" "${sugg:-0}")"
