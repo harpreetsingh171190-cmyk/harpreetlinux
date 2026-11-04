@@ -1,0 +1,17 @@
+# Network reconnaissance and traffic analysis (use only on networks you own or have written permission to test)
+masscan
+arp-scan
+netdiscover
+nbtscan
+dnsrecon
+whatweb
+enum4linux
+ncat
+socat
+tcpdump
+tshark
+mitmproxy
+proxychains4
+sslscan
+testssl.sh
+hping3

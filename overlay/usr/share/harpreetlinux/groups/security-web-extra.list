@@ -1,0 +1,6 @@
+# More web testing tools (use only on sites you own or have written permission to test)
+wapiti
+dirb
+wfuzz
+wpscan
+burpsuite

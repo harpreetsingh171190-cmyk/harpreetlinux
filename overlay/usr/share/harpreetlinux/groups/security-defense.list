@@ -1,0 +1,11 @@
+# Defence and hardening: system audit, rootkit checks, antivirus, intrusion blocking, file integrity
+lynis
+rkhunter
+chkrootkit
+clamav
+clamav-daemon
+fail2ban
+aide
+auditd
+suricata
+apparmor-utils
