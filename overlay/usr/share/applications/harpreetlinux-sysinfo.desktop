@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux System Info
+Name[pa]=ਹਰਪ੍ਰੀਤ ਲੀਨਕਸ ਸਿਸਟਮ ਜਾਣਕਾਰੀ
+Comment=Show version, hardware, memory, disk and battery
+Comment[pa]=ਵਰਜਨ, ਹਾਰਡਵੇਅਰ, ਮੈਮੋਰੀ, ਡਿਸਕ ਅਤੇ ਬੈਟਰੀ ਦੀ ਜਾਣਕਾਰੀ
+Exec=/usr/local/bin/harpreetlinux-sysinfo
+Icon=computer
+Categories=System;

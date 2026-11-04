@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux Toolbox
+Name[pa]=ਹਰਪ੍ਰੀਤ ਲੀਨਕਸ ਟੂਲਬਾਕਸ
+Comment=Developer containers (Fedora, Debian, Ubuntu, Arch)
+Comment[pa]=ਡਿਵੈਲਪਰ ਕੰਟੇਨਰ (Fedora, Debian, Ubuntu, Arch)
+Exec=/usr/local/bin/harpreetlinux-toolbox
+Icon=utilities-terminal
+Categories=System;Development;

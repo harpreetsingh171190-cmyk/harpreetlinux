@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux Cleanup
+Name[pa]=ਹਰਪ੍ਰੀਤ ਲੀਨਕਸ ਸਫ਼ਾਈ
+Comment=Free disk space: package cache, old logs, trash
+Comment[pa]=ਡਿਸਕ ਦੀ ਥਾਂ ਖਾਲੀ ਕਰੋ: ਪੈਕੇਜ ਕੈਸ਼, ਪੁਰਾਣੇ ਲੌਗ, ਰੱਦੀ
+Exec=/usr/local/bin/harpreetlinux-cleanup
+Icon=bleachbit
+Categories=System;

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux Cockpit
+Name[pa]=ਹਰਪ੍ਰੀਤ ਲੀਨਕਸ ਕਾਕਪਿਟ
+Comment=Manage the system from the browser
+Comment[pa]=ਬ੍ਰਾਊਜ਼ਰ ਰਾਹੀਂ ਸਿਸਟਮ ਦਾ ਪ੍ਰਬੰਧ ਕਰੋ
+Exec=/usr/local/bin/harpreetlinux-cockpit
+Icon=preferences-system
+Categories=System;Settings;
