@@ -1,0 +1,35 @@
+#!/bin/sh
+# Backup helper window: turn on automatic Timeshift snapshots, make one now, or open Timeshift.
+command -v zenity >/dev/null 2>&1 || exit 0
+. /usr/share/harpreetlinux/i18n.sh
+export SUDO_ASKPASS=/usr/local/bin/harpreetlinux-askpass
+
+choice=$(zenity --list --radiolist --title="$HL_BK_TITLE" --text="$HL_BK_TEXT" \
+  --window-icon=/usr/share/pixmaps/harpreetlinux-logo.png \
+  --column="" --column="id" --column="$HL_BK_COL" --hide-column=2 --print-column=2 \
+  --width=520 --height=300 \
+  TRUE enable "$HL_BK_ENABLE" \
+  FALSE now "$HL_BK_NOW" \
+  FALSE open "$HL_BK_OPEN") || exit 0
+
+case "$choice" in
+  enable)
+    apt_flag=""
+    if zenity --question --width=420 --title="$HL_BK_TITLE" --text="$HL_BK_APT_Q"; then apt_flag="--apt-hook"; fi
+    sudo -A /usr/local/bin/harpreetlinux-backup-enable $apt_flag
+    rc=$?
+    if [ "$rc" -eq 0 ]; then
+      zenity --info --width=420 --title="$HL_BK_TITLE" --text="$HL_BK_ENABLED"
+    elif [ "$rc" -eq 2 ]; then
+      zenity --warning --width=420 --title="$HL_BK_TITLE" --text="$HL_BK_LIVE"
+    else
+      zenity --error --width=420 --title="$HL_BK_TITLE" --text="$HL_BK_FAIL"
+    fi
+    ;;
+  now)
+    x-terminal-emulator -e sh -c 'sudo -A timeshift --create --comments "HarpreetLinux manual backup" --tags O; echo; echo "'"$HL_BK_PRESS"'"; read dummy'
+    ;;
+  open)
+    exec timeshift-launcher
+    ;;
+esac
