@@ -1,0 +1,40 @@
+#!/bin/sh
+# Update window: list updates, install them, switch automatic security updates on or off.
+# "--check" skips the first menu and goes straight to the list.
+command -v zenity >/dev/null 2>&1 || exit 0
+. /usr/share/harpreetlinux/i18n.sh
+export SUDO_ASKPASS=/usr/local/bin/harpreetlinux-askpass
+ICON=/usr/share/pixmaps/harpreetlinux-logo.png
+
+show_updates() {
+  out=$(apt-get -s -o Debug::NoLocking=1 dist-upgrade 2>/dev/null | grep '^Inst')
+  if [ -z "$out" ]; then zenity --info --width=320 --title="$HL_UP_TITLE" --text="$HL_UP_NONE"; return; fi
+  rows=$(printf '%s\n' "$out" | sed -E 's/^Inst ([^ ]+) (\[[^]]*\] )?\(([^ ]+) ([^ ]+).*/\1\n\3\n\4/')
+  printf '%s\n' "$rows" | zenity --list --title="$HL_UP_TITLE" --window-icon="$ICON" --text="$HL_UP_LIST_TEXT" \
+    --column="$HL_UP_COL_PKG" --column="$HL_UP_COL_VER" --column="$HL_UP_COL_SRC" \
+    --ok-label="$HL_UP_INSTALL" --cancel-label="$HL_UP_LATER" --width=640 --height=420 >/dev/null || return
+  x-terminal-emulator -e sh -c 'sudo -A sh -c "apt-get update && apt-get dist-upgrade -y"; echo; echo "'"$HL_BK_PRESS"'"; read dummy'
+}
+
+if [ "${1:-}" = "--check" ]; then show_updates; exit 0; fi
+
+if grep -q 'Unattended-Upgrade "1"' /etc/apt/apt.conf.d/20auto-upgrades 2>/dev/null; then
+  state="$HL_UP_STATE_ON"
+else
+  state="$HL_UP_STATE_OFF"
+fi
+choice=$(zenity --list --radiolist --title="$HL_UP_TITLE" --window-icon="$ICON" --text="$state" \
+  --column="" --column="id" --column="$HL_UP_COL" --hide-column=2 --print-column=2 \
+  --width=520 --height=320 \
+  TRUE check "$HL_UP_CHECK" FALSE on "$HL_UP_AUTO_ON" FALSE off "$HL_UP_AUTO_OFF") || exit 0
+
+case "$choice" in
+  check) show_updates ;;
+  on|off)
+    if sudo -A /usr/local/bin/harpreetlinux-updates-config "$choice"; then
+      zenity --info --width=320 --title="$HL_UP_TITLE" --text="$HL_UP_CFG_OK"
+    else
+      zenity --error --width=320 --title="$HL_UP_TITLE" --text="$HL_UP_CFG_FAIL"
+    fi
+    ;;
+esac

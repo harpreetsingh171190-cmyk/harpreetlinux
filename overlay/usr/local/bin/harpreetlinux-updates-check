@@ -1,0 +1,23 @@
+#!/bin/sh
+# Autostart: looks for updates a while after login and then every 6 hours; shows a notification.
+[ "$(findmnt -no FSTYPE / 2>/dev/null)" = overlay ] && exit 0   # not in the live session
+command -v notify-send >/dev/null 2>&1 || exit 0
+. /usr/share/harpreetlinux/i18n.sh
+STATE_DIR="$HOME/.cache/harpreetlinux"; STATE="$STATE_DIR/updates-last"
+mkdir -p "$STATE_DIR"
+sleep 90
+while :; do
+  out=$(apt-get -s -o Debug::NoLocking=1 dist-upgrade 2>/dev/null | grep '^Inst')
+  total=0; sec=0
+  if [ -n "$out" ]; then
+    total=$(printf '%s\n' "$out" | grep -c '^Inst')
+    sec=$(printf '%s\n' "$out" | grep -c 'Debian-Security')
+  fi
+  if [ "$total" -gt 0 ] && [ "$(cat "$STATE" 2>/dev/null)" != "$total/$sec" ]; then
+    echo "$total/$sec" > "$STATE"
+    body=$(printf "$HL_UP_NOTIFY_BODY" "$total" "$sec")
+    ( act=$(notify-send -a HarpreetLinux -i harpreetlinux -A "show=$HL_UP_SHOW" -w "$HL_UP_NOTIFY_TITLE" "$body" 2>/dev/null)
+      [ "$act" = show ] && /usr/local/bin/harpreetlinux-updates --check ) &
+  fi
+  sleep 21600
+done

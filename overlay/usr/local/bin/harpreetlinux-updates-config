@@ -1,0 +1,10 @@
+#!/bin/sh
+# Root helper: "on" installs security updates automatically, "off" only refreshes the package lists.
+set -e
+[ "$(id -u)" -eq 0 ] || { echo "Run as root (use sudo)." >&2; exit 1; }
+case "${1:-}" in on) v=1 ;; off) v=0 ;; *) echo "Usage: $0 on|off" >&2; exit 1 ;; esac
+cat > /etc/apt/apt.conf.d/20auto-upgrades <<CONF
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "$v";
+APT::Periodic::AutocleanInterval "7";
+CONF

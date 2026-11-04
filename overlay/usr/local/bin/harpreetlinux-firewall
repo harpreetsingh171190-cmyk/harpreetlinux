@@ -1,0 +1,45 @@
+#!/bin/sh
+# Simple firewall window on top of ufw: on/off, allow a port or service, remove a rule.
+command -v zenity >/dev/null 2>&1 || exit 0
+. /usr/share/harpreetlinux/i18n.sh
+export SUDO_ASKPASS=/usr/local/bin/harpreetlinux-askpass
+ICON=/usr/share/pixmaps/harpreetlinux-logo.png
+ufw_do() { sudo -A env LC_ALL=C ufw "$@"; }
+sudo -A -v || exit 0
+
+while :; do
+  rules=$(ufw_do status numbered 2>&1)
+  case "$rules" in
+    "Status: active"*) active=1; text="$HL_FW_ON"; toggle_label="$HL_FW_TURN_OFF" ;;
+    *) active=0; text="$HL_FW_OFF"; toggle_label="$HL_FW_TURN_ON" ;;
+  esac
+  choice=$(zenity --list --radiolist --title="$HL_FW_TITLE" --window-icon="$ICON" --text="$text" \
+    --column="" --column="id" --column="$HL_FW_COL" --hide-column=2 --print-column=2 \
+    --width=480 --height=340 \
+    TRUE toggle "$toggle_label" FALSE allow "$HL_FW_ALLOW" \
+    FALSE delete "$HL_FW_DELETE" FALSE view "$HL_FW_VIEW") || exit 0
+
+  case "$choice" in
+    toggle)
+      if [ "$active" -eq 1 ]; then ufw_do disable >/dev/null 2>&1; else ufw_do --force enable >/dev/null 2>&1; fi \
+        || zenity --error --text="$HL_FW_ERR"
+      ;;
+    allow)
+      p=$(zenity --entry --title="$HL_FW_TITLE" --text="$HL_FW_PORT_Q") || continue
+      case "$p" in
+        ""|*[!A-Za-z0-9:/_-]*) zenity --error --text="$HL_FW_BAD"; continue ;;
+      esac
+      ufw_do allow "$p" >/dev/null 2>&1 || zenity --error --text="$HL_FW_ERR"
+      ;;
+    delete)
+      list=$(printf '%s\n' "$rules" | sed -n -E 's/^\[ *([0-9]+)\] +(.*)$/\1\n\2/p')
+      if [ -z "$list" ]; then zenity --info --text="$HL_FW_NORULES"; continue; fi
+      n=$(printf '%s\n' "$list" | zenity --list --title="$HL_FW_TITLE" --text="$HL_FW_DEL_TEXT" \
+        --column="$HL_FW_COL_NUM" --column="$HL_FW_COL_RULE" --width=560 --height=380) || continue
+      ufw_do --force delete "$n" >/dev/null 2>&1 || zenity --error --text="$HL_FW_ERR"
+      ;;
+    view)
+      ufw_do status verbose 2>&1 | zenity --text-info --title="$HL_FW_TITLE" --width=600 --height=400
+      ;;
+  esac
+done
