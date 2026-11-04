@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux Security Check
+Name[pa]=ਹਰਪ੍ਰੀਤ ਲੀਨਕਸ ਸੁਰੱਖਿਆ ਜਾਂਚ
+Comment=Audit this computer's security and show a score
+Comment[pa]=ਇਸ ਕੰਪਿਊਟਰ ਦੀ ਸੁਰੱਖਿਆ ਜਾਂਚੋ ਅਤੇ ਸਕੋਰ ਦੇਖੋ
+Exec=/usr/local/bin/harpreetlinux-secaudit
+Icon=security-high
+Categories=System;Security;
