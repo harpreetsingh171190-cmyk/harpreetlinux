@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux driver check
+Exec=/usr/local/bin/harpreetlinux-drivers-check
+Icon=harpreetlinux
+X-GNOME-Autostart-enabled=true
