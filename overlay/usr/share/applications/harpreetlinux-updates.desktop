@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux Updates
+Name[pa]=ਹਰਪ੍ਰੀਤ ਲੀਨਕਸ ਅੱਪਡੇਟ
+Comment=Install updates and manage automatic security updates
+Comment[pa]=ਅੱਪਡੇਟ ਇੰਸਟਾਲ ਕਰੋ ਅਤੇ ਆਟੋਮੈਟਿਕ ਸੁਰੱਖਿਆ ਅੱਪਡੇਟ ਸੰਭਾਲੋ
+Exec=/usr/local/bin/harpreetlinux-updates
+Icon=system-software-update
+Categories=System;

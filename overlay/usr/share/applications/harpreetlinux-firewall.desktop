@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux Firewall
+Name[pa]=ਹਰਪ੍ਰੀਤ ਲੀਨਕਸ ਫਾਇਰਵਾਲ
+Comment=Turn the firewall on or off and manage rules
+Comment[pa]=ਫਾਇਰਵਾਲ ਚਾਲੂ ਜਾਂ ਬੰਦ ਕਰੋ ਅਤੇ ਨਿਯਮ ਸੰਭਾਲੋ
+Exec=/usr/local/bin/harpreetlinux-firewall
+Icon=security-high
+Categories=System;Settings;
