@@ -1,0 +1,44 @@
+#!/bin/sh
+# Driver window: finds hardware that needs extra drivers (NVIDIA, Wi-Fi) and installs them.
+command -v zenity >/dev/null 2>&1 || exit 0
+. /usr/share/harpreetlinux/i18n.sh
+. /usr/share/harpreetlinux/drivers.sh
+export SUDO_ASKPASS=/usr/local/bin/harpreetlinux-askpass
+ICON=/usr/share/pixmaps/harpreetlinux-logo.png
+
+if [ "$(findmnt -no FSTYPE / 2>/dev/null)" = overlay ]; then
+  zenity --warning --width=420 --title="$HL_DRV_TITLE" --text="$HL_DRV_LIVE"; exit 0
+fi
+
+found=$(hl_drivers_detect)
+if [ -z "$found" ]; then
+  zenity --info --width=380 --title="$HL_DRV_TITLE" --text="$HL_DRV_NONE"; exit 0
+fi
+
+set --
+while IFS='|' read -r key hw display tokens chk; do
+  [ -n "$key" ] && set -- "$@" "$chk" "$key" "$hw" "$display"
+done <<LIST
+$found
+LIST
+
+sel=$(zenity --list --checklist --separator=' ' --title="$HL_DRV_TITLE" --window-icon="$ICON" \
+  --text="$HL_DRV_TEXT" --column="" --column="id" --column="$HL_DRV_COL_HW" --column="$HL_DRV_COL_PKG" \
+  --hide-column=2 --print-column=2 --ok-label="$HL_DRV_INSTALL" --width=760 --height=380 "$@") || exit 0
+[ -n "$sel" ] || exit 0
+
+tokens_all=""
+for k in $sel; do
+  t=$(printf '%s\n' "$found" | awk -F'|' -v k="$k" '$1==k {print $4; exit}')
+  tokens_all="$tokens_all $t"
+done
+
+case " $sel " in
+  *" nvidia "*)
+    if hl_secure_boot_on; then zenity --question --width=420 --title="$HL_DRV_TITLE" --text="$HL_DRV_SB" || exit 0; fi ;;
+esac
+
+# Token names come from our own detection (letters, digits and - + . only)
+case "$tokens_all" in *[!a-z0-9.+\ -]*) exit 1 ;; esac
+x-terminal-emulator -e sh -c 'sudo -A /usr/local/bin/harpreetlinux-drivers-install '"$tokens_all"'; echo; echo "'"$HL_BK_PRESS"'"; read dummy'
+zenity --info --width=420 --title="$HL_DRV_TITLE" --text="$HL_DRV_RESTART"

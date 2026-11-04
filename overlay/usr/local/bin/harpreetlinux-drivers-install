@@ -1,0 +1,46 @@
+#!/bin/sh
+# Root helper: installs driver packages. Arguments are package names, or the tokens
+# "nvidia" (the package nvidia-detect recommends, with kernel headers) and "headers".
+[ "$(id -u)" -eq 0 ] || { echo "Run as root (use sudo)." >&2; exit 1; }
+export DEBIAN_FRONTEND=noninteractive
+
+allowed() {
+  case "$1" in
+    firmware-*|nvidia-*|broadcom-sta-dkms|linux-headers-*|dkms) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+add() { for _n in "$@"; do allowed "$_n" && LIST="$LIST $_n" || echo "Skipped (not allowed): $_n" >&2; done; }
+
+apt-get update || echo "Warning: apt-get update failed" >&2
+
+kernel_headers() {
+  _h="linux-headers-$(uname -r)"
+  apt-cache show "$_h" >/dev/null 2>&1 && add "$_h"
+  add linux-headers-amd64
+}
+
+LIST=""
+for tok in "$@"; do
+  case "$tok" in
+    nvidia)
+      kernel_headers
+      apt-get install -y nvidia-detect || true
+      rec=$(nvidia-detect 2>/dev/null | awk '/recommended to install/{getline; gsub(/^[ \t]+|[ \t]+$/,""); print; exit}')
+      case "$rec" in ""|*[!a-z0-9.+-]*) rec=nvidia-driver ;; esac
+      add "$rec"
+      ;;
+    headers) kernel_headers ;;
+    *) add "$tok" ;;
+  esac
+done
+
+# Only packages this Debian release knows about
+AVAILABLE=""
+for p in $LIST; do
+  if apt-cache show "$p" >/dev/null 2>&1; then AVAILABLE="$AVAILABLE $p"; else echo "Not available: $p" >&2; fi
+done
+[ -n "$AVAILABLE" ] || { echo "Nothing to install." >&2; exit 1; }
+echo "Installing:$AVAILABLE"
+# shellcheck disable=SC2086
+apt-get install -y $AVAILABLE

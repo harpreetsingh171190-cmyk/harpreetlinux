@@ -1,0 +1,16 @@
+#!/bin/sh
+# Autostart: once per login, a little after the desktop starts, looks for hardware that needs drivers.
+[ "$(findmnt -no FSTYPE / 2>/dev/null)" = overlay ] && exit 0   # not in the live session
+command -v notify-send >/dev/null 2>&1 || exit 0
+. /usr/share/harpreetlinux/i18n.sh
+. /usr/share/harpreetlinux/drivers.sh
+STATE_DIR="$HOME/.cache/harpreetlinux"; STATE="$STATE_DIR/drivers-last"
+mkdir -p "$STATE_DIR"
+sleep 120
+found=$(hl_drivers_detect)
+[ -n "$found" ] || exit 0
+sum=$(printf '%s\n' "$found" | cksum)
+[ "$(cat "$STATE" 2>/dev/null)" = "$sum" ] && exit 0     # already told the user about exactly this
+echo "$sum" > "$STATE"
+act=$(notify-send -a HarpreetLinux -i harpreetlinux -A "show=$HL_UP_SHOW" -w "$HL_DRV_NOTIFY_TITLE" "$HL_DRV_NOTIFY_BODY" 2>/dev/null)
+[ "$act" = show ] && exec /usr/local/bin/harpreetlinux-drivers
