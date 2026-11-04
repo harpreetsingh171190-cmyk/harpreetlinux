@@ -1,0 +1,9 @@
+// HarpreetLinux: install only Debian security updates automatically. No automatic reboot.
+Unattended-Upgrade::Origins-Pattern {
+        "origin=Debian,codename=trixie-security,label=Debian-Security";
+};
+Unattended-Upgrade::AutoFixInterruptedDpkg "true";
+Unattended-Upgrade::MinimalSteps "true";
+Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
+Unattended-Upgrade::Automatic-Reboot "false";
