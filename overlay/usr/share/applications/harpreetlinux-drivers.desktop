@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux Drivers
+Name[pa]=ਹਰਪ੍ਰੀਤ ਲੀਨਕਸ ਡਰਾਈਵਰ
+Comment=Find and install drivers for NVIDIA graphics and Wi-Fi
+Comment[pa]=NVIDIA ਗ੍ਰਾਫਿਕਸ ਅਤੇ Wi-Fi ਲਈ ਡਰਾਈਵਰ ਲੱਭੋ ਅਤੇ ਇੰਸਟਾਲ ਕਰੋ
+Exec=/usr/local/bin/harpreetlinux-drivers
+Icon=preferences-system
+Categories=System;Settings;
