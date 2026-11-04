@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+# HarpreetLinux Anon: sends all traffic of this computer through Tor (like Anonsurf).
+# Everything that cannot go through Tor is blocked (kill switch). Local network stays reachable.
+# Not saved across reboots: after a restart the computer is back to normal.
+set -u
+TORRC=/usr/share/harpreetlinux/anon-torrc
+TORUSER=debian-tor
+DATA=/var/lib/tor/hl-anon
+PIDF=/run/tor/hl-anon.pid
+LOG=/var/log/tor/hl-anon.log
+STATE=/run/harpreetlinux-anon.on
+
+tor_up() {
+  install -d -o "$TORUSER" -g "$TORUSER" -m 755 /run/tor /var/log/tor
+  install -d -o "$TORUSER" -g "$TORUSER" -m 700 "$DATA"
+  : > "$LOG"; chown "$TORUSER:$TORUSER" "$LOG"
+  tor -f "$TORRC" --DataDirectory "$DATA" --PidFile "$PIDF" --Log "notice file $LOG" \
+      --RunAsDaemon 1 --User "$TORUSER" >/dev/null 2>&1 || return 1
+  for _ in $(seq 1 120); do
+    grep -q 'Bootstrapped 100%' "$LOG" 2>/dev/null && return 0
+    sleep 1
+  done
+  return 1
+}
+tor_down() {
+  [ -f "$PIDF" ] && kill "$(cat "$PIDF")" 2>/dev/null
+  for _ in 1 2 3 4 5 6 7 8 9 10; do [ -f "$PIDF" ] && kill -0 "$(cat "$PIDF")" 2>/dev/null && sleep 1; done
+  rm -f "$PIDF"
+}
+rules_up() {
+  uid=$(id -u "$TORUSER")
+  nft -f - <<NFT
+table ip hl_anon_nat {
+  chain output {
+    type nat hook output priority -100; policy accept;
+    meta skuid $uid return
+    udp dport 53 redirect to :5353
+    ip daddr 10.192.0.0/10 meta l4proto tcp redirect to :9040
+    ip daddr { 127.0.0.0/8, 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 169.254.0.0/16 } return
+    meta l4proto tcp redirect to :9040
+  }
+}
+table inet hl_anon_filter {
+  chain output {
+    type filter hook output priority 0; policy accept;
+    oifname "lo" accept
+    meta skuid $uid accept
+    meta nfproto ipv6 reject
+    ip daddr { 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 169.254.0.0/16, 224.0.0.0/4, 255.255.255.255 } accept
+    reject
+  }
+}
+NFT
+}
+rules_down() {
+  nft delete table ip hl_anon_nat 2>/dev/null
+  nft delete table inet hl_anon_filter 2>/dev/null
+}
+
+root_cmd() {
+  [ "$(id -u)" = 0 ] || exit 4
+  command -v tor >/dev/null && command -v nft >/dev/null || exit 3
+  id -u "$TORUSER" >/dev/null 2>&1 || exit 3
+  case "$1" in
+    start)  [ -f "$STATE" ] && exit 0
+            if tor_up; then rules_up && touch "$STATE" && chmod 644 "$STATE" && exit 0; fi
+            tor_down; rules_down; exit 1 ;;
+    stop)   rules_down; tor_down; rm -f "$STATE"; exit 0 ;;
+    newid)  [ -f "$STATE" ] || exit 5
+            tor_down
+            tor_up && exit 0
+            rules_down; tor_down; rm -f "$STATE"; exit 1 ;;
+  esac
+}
+
+case "${1:-}" in
+  start|stop|newid) root_cmd "$1" ;;
+esac
+
+# ---- window (normal user) ----
+command -v zenity >/dev/null 2>&1 || exit 0
+# shellcheck disable=SC1091
+. /usr/share/harpreetlinux/i18n.sh
+export SUDO_ASKPASS=/usr/local/bin/harpreetlinux-askpass
+ICON=/usr/share/pixmaps/harpreetlinux-logo.png
+SELF=$(readlink -f "$0")
+
+run_root() {  # run_root <cmd>; shows a waiting bar, returns the exit code
+  local rc; rc=$(mktemp)
+  ( sudo -A "$SELF" "$1"; echo $? > "$rc" ) 2>/dev/null \
+    | zenity --progress --pulsate --no-cancel --auto-close --title="$HL_AN_TITLE" --window-icon="$ICON" --text="$HL_AN_WAIT" &
+  local zp=$!
+  while [ ! -s "$rc" ]; do sleep 1; done
+  kill "$zp" 2>/dev/null; wait "$zp" 2>/dev/null
+  local code; code=$(cat "$rc"); rm -f "$rc"; return "$code"
+}
+
+while :; do
+  if [ -f "$STATE" ]; then now="$HL_AN_IS_ON"; else now="$HL_AN_IS_OFF"; fi
+  act=$(zenity --list --radiolist --title="$HL_AN_TITLE" --window-icon="$ICON" \
+    --text="$now\n\n$HL_AN_TEXT" --column="" --column="id" --column="$HL_AN_ACT" \
+    --hide-column=2 --print-column=2 --width=560 --height=440 \
+    TRUE start "$HL_AN_START" FALSE stop "$HL_AN_STOP" FALSE newid "$HL_AN_NEWID" FALSE status "$HL_AN_STATUS") || exit 0
+  case "$act" in
+    start|stop|newid)
+      if [ "$act" != stop ] && { ! command -v tor >/dev/null 2>&1 || ! command -v nft >/dev/null 2>&1; }; then
+        zenity --question --width=420 --title="$HL_AN_TITLE" --window-icon="$ICON" --text="$HL_NEED_Q" || continue
+        x-terminal-emulator -e sh -c 'sudo -A apt-get update && sudo -A apt-get install -y tor nftables' || true
+        command -v tor >/dev/null 2>&1 && command -v nft >/dev/null 2>&1 || { zenity --error --text="$HL_NEED_FAIL"; continue; }
+      fi
+      sudo -A -v || continue
+      run_root "$act"; rc=$?
+      if [ "$rc" = 0 ]; then
+        case "$act" in start) zenity --info --width=380 --text="$HL_AN_STARTED" ;;
+                       stop) zenity --info --width=380 --text="$HL_AN_STOPPED" ;;
+                       newid) zenity --info --width=380 --text="$HL_AN_NEWID_DONE" ;; esac
+      elif [ "$rc" = 5 ]; then zenity --warning --width=380 --text="$HL_AN_IS_OFF"
+      else zenity --error --width=420 --text="$HL_AN_FAIL"; fi ;;
+    status)
+      if [ ! -f "$STATE" ]; then zenity --info --width=380 --text="$HL_AN_IS_OFF"; continue; fi
+      out=$(curl -s --max-time 30 https://check.torproject.org/api/ip 2>/dev/null)
+      ip=$(printf '%s' "$out" | grep -o '"IP":"[^"]*"' | cut -d'"' -f4)
+      if printf '%s' "$out" | grep -q '"IsTor":true'; then
+        zenity --info --width=420 --text="$(printf "$HL_AN_TOR_YES" "$ip")"
+      else
+        zenity --warning --width=420 --text="$HL_AN_TOR_NO"
+      fi ;;
+  esac
+done

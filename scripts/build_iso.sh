@@ -146,7 +146,7 @@ sudo chmod 755 "$ROOTFS/usr/local/bin/harpreetlinux-setup"
 sudo chmod 755 "$ROOTFS/usr/local/bin/harpreetlinux-firstboot"
 sudo chmod 755 "$ROOTFS/usr/local/bin/harpreetlinux-welcome"
 sudo chmod 755 "$ROOTFS/usr/local/bin/harpreetlinux-language"
-for t in askpass backup backup-enable snapshot-apt firewall updates updates-config updates-check drivers drivers-install drivers-check cleanup sysinfo cockpit toolbox secaudit; do
+for t in askpass backup backup-enable snapshot-apt firewall updates updates-config updates-check drivers drivers-install drivers-check cleanup sysinfo cockpit toolbox secaudit anon wifitest hardening; do
   sudo chmod 755 "$ROOTFS/usr/local/bin/harpreetlinux-$t"
 done
 

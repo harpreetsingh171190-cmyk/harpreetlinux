@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux Kernel Hardening
+Name[pa]=ਹਰਪ੍ਰੀਤ ਲੀਨਕਸ ਕਰਨਲ ਸੁਰੱਖਿਆ
+Comment=See which kernel hardening settings are active
+Comment[pa]=ਦੇਖੋ ਕਿਹੜੀਆਂ ਕਰਨਲ ਸੁਰੱਖਿਆ ਸੈਟਿੰਗਾਂ ਚਾਲੂ ਹਨ
+Exec=/usr/local/bin/harpreetlinux-hardening
+Icon=security-high
+Categories=System;Security;

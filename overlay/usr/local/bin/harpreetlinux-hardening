@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Shows which kernel hardening settings are active, and can relax two debugging limits until the next restart.
+command -v zenity >/dev/null 2>&1 || exit 0
+# shellcheck disable=SC1091
+. /usr/share/harpreetlinux/i18n.sh
+export SUDO_ASKPASS=/usr/local/bin/harpreetlinux-askpass
+ICON=/usr/share/pixmaps/harpreetlinux-logo.png
+
+check() {  # name expected(min value)
+  local v; v=$(sysctl -n "$1" 2>/dev/null)
+  if [ -z "$v" ]; then printf '%s: %s\n' "$1" "$HL_HD_NA"
+  elif [ "$v" -ge "$2" ] 2>/dev/null; then printf 'OK  %s = %s\n' "$1" "$v"
+  else printf '!!  %s = %s (%s >= %s)\n' "$1" "$v" "$HL_HD_WANT" "$2"; fi
+}
+report="$(check kernel.kptr_restrict 2)
+$(check kernel.dmesg_restrict 1)
+$(check kernel.kexec_load_disabled 1)
+$(check kernel.unprivileged_bpf_disabled 1)
+$(check net.core.bpf_jit_harden 2)
+$(check kernel.yama.ptrace_scope 1)
+$(check kernel.perf_event_paranoid 3)
+$(check fs.protected_symlinks 1)
+$(check fs.protected_regular 2)
+$(check net.ipv4.tcp_syncookies 1)"
+for opt in slab_nomerge init_on_alloc=1 randomize_kstack_offset=on vsyscall=none; do
+  if grep -qw "$opt" /proc/cmdline; then report="$report
+OK  boot: $opt"; else report="$report
+!!  boot: $opt $HL_HD_BOOT"; fi
+done
+
+zenity --text-info --title="$HL_HD_TITLE" --window-icon="$ICON" --width=560 --height=440 \
+  --font="monospace" <<<"$HL_HD_TEXT
+
+$report" >/dev/null 2>&1
+zenity --question --width=440 --title="$HL_HD_TITLE" --window-icon="$ICON" --text="$HL_HD_RELAX_Q" || exit 0
+sudo -A -v || exit 0
+sudo -A sysctl -w kernel.yama.ptrace_scope=0 kernel.perf_event_paranoid=2 >/dev/null 2>&1
+zenity --info --width=380 --text="$HL_HD_RELAXED"

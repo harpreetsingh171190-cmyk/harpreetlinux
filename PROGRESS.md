@@ -1,5 +1,13 @@
 # HarpreetLinux progress log
 
+## Iteration 10: privacy, kernel hardening, bigger Security Edition
+- "HarpreetLinux Anon" (like Anonsurf): runs its own Tor instance and sends all traffic of the computer through it (nftables transparent proxy, Tor DNS). Kill switch: UDP, IPv6 and anything else that cannot go through Tor is blocked; local network stays reachable. Turn on/off, new identity, and a check against check.torproject.org. Nothing is saved across reboots. Installs tor and nftables on first use. It does not guarantee anonymity (the window says so).
+- privacy group now also has I2P (i2pd), age, gocryptfs, GnuPG, cryptsetup, mat2, Seahorse, nftables.
+- Kernel hardening WITHOUT a custom kernel: overlay/etc/sysctl.d/99-harpreetlinux-hardening.conf, modprobe.d blacklist of rarely used protocols and old file systems, and boot options (slab_nomerge, init_on_alloc, page_alloc.shuffle, randomize_kstack_offset, vsyscall=none) for installed systems through /etc/default/grub.d. "HarpreetLinux Kernel Hardening" window shows what is active and can relax ptrace/perf limits until reboot for debugging.
+- A custom-compiled kernel was NOT built (it needs a kernel build and tests on real hardware). The stock Debian kernel already supports monitor mode and injection on most Wi-Fi drivers; "HarpreetLinux Wi-Fi Adapter Test" checks your adapter (monitor mode, then aireplay-ng injection test, adapter put back to normal after).
+- Security Edition (EDITION=security) already existed; its package list now also has i2pd, Lynis, rkhunter, fail2ban, masscan, mitmproxy, sslscan, wapiti, crunch, steghide and others. Missing packages are skipped as before (see /usr/share/harpreetlinux-security-skipped.txt).
+- VERSION_LABEL is now 0.6. Not tested in a real boot: Anon rules (nftables), Wi-Fi test, grub drop-in.
+
 ## Iteration 9: cybersecurity toolkit
 - Already there before: security-ethical, wireless, forensics, reverse-engineering, privacy groups.
 - New groups: security-defense (Lynis, rkhunter, chkrootkit, ClamAV, fail2ban, AIDE, auditd, Suricata), security-recon (masscan, arp-scan, tshark, mitmproxy, sslscan, ...), security-web-extra (wapiti, dirb, wfuzz, wpscan, Burp Suite), security-passwords (crunch, cewl, medusa, ncrack, hashid, cupp), osint-stego (theHarvester, recon-ng, SpiderFoot, steghide, stegseek).

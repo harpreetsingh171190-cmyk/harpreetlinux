@@ -1,0 +1,8 @@
+# Tor settings for HarpreetLinux Anon (a separate Tor instance, system-wide transparent proxy).
+SocksPort 0
+TransPort 127.0.0.1:9040
+DNSPort 127.0.0.1:5353
+AutomapHostsOnResolve 1
+VirtualAddrNetworkIPv4 10.192.0.0/10
+ClientOnly 1
+AvoidDiskWrites 1

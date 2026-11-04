@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux Anon
+Name[pa]=ਹਰਪ੍ਰੀਤ ਲੀਨਕਸ ਅਨੌਨ
+Comment=Send all traffic through Tor with a kill switch
+Comment[pa]=ਸਾਰਾ ਟ੍ਰੈਫਿਕ Tor ਰਾਹੀਂ ਭੇਜੋ (ਕਿੱਲ ਸਵਿੱਚ ਸਮੇਤ)
+Exec=/usr/local/bin/harpreetlinux-anon
+Icon=network-vpn
+Categories=Network;Security;

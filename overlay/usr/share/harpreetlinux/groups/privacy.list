@@ -1,5 +1,13 @@
-# Privacy and anonymity: Tor, encrypted notes, secure file sharing
+# Privacy and anonymity: Tor, I2P, encryption tools, metadata cleaning, secure sharing
 tor
 torsocks
 onionshare
+i2pd
 keepassxc
+gnupg
+age
+gocryptfs
+cryptsetup
+mat2
+seahorse
+nftables

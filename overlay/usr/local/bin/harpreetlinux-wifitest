@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Checks your own Wi-Fi adapter for monitor mode and packet injection (needed for Wi-Fi security testing).
+command -v zenity >/dev/null 2>&1 || exit 0
+# shellcheck disable=SC1091
+. /usr/share/harpreetlinux/i18n.sh
+export SUDO_ASKPASS=/usr/local/bin/harpreetlinux-askpass
+ICON=/usr/share/pixmaps/harpreetlinux-logo.png
+
+command -v iw >/dev/null 2>&1 || { zenity --error --text="$HL_NEED_FAIL (iw)"; exit 1; }
+rows=()
+for i in $(iw dev 2>/dev/null | awk '$1=="Interface"{print $2}'); do
+  phy=$(iw dev "$i" info | awk '/wiphy/{print $2}')
+  drv=$(basename "$(readlink -f "/sys/class/net/$i/device/driver" 2>/dev/null)" 2>/dev/null)
+  if iw phy "phy$phy" info 2>/dev/null | grep -q '\* monitor'; then mon="$HL_WT_YES"; else mon="$HL_WT_NO"; fi
+  rows+=("$i" "${drv:-?}" "$mon")
+done
+[ "${#rows[@]}" -gt 0 ] || { zenity --info --width=380 --text="$HL_WT_NONE"; exit 0; }
+
+sel=$(zenity --list --title="$HL_WT_TITLE" --window-icon="$ICON" --text="$HL_WT_TEXT" \
+  --column="$HL_WT_IF" --column="$HL_WT_DRV" --column="$HL_WT_MON" --width=560 --height=320 "${rows[@]}") || exit 0
+[ -n "$sel" ] || exit 0
+
+zenity --question --width=440 --title="$HL_WT_TITLE" --window-icon="$ICON" --text="$(printf "$HL_WT_Q" "$sel")" || exit 0
+if ! command -v aireplay-ng >/dev/null 2>&1; then
+  zenity --question --width=420 --text="$HL_NEED_Q" || exit 0
+  x-terminal-emulator -e sh -c 'sudo -A apt-get update && sudo -A apt-get install -y aircrack-ng' || true
+  command -v aireplay-ng >/dev/null 2>&1 || { zenity --error --text="$HL_NEED_FAIL"; exit 1; }
+fi
+sudo -A -v || exit 0
+x-terminal-emulator -e sh -c "
+  sudo -A ip link set '$sel' down && sudo -A iw dev '$sel' set type monitor && sudo -A ip link set '$sel' up &&
+  sudo -A aireplay-ng --test '$sel';
+  sudo -A ip link set '$sel' down; sudo -A iw dev '$sel' set type managed; sudo -A ip link set '$sel' up;
+  echo; echo '$HL_WT_PRESS'; read -r _"

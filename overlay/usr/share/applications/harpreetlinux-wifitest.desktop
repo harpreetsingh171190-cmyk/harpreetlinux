@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux Wi-Fi Adapter Test
+Name[pa]=ਹਰਪ੍ਰੀਤ ਲੀਨਕਸ Wi-Fi ਅਡੈਪਟਰ ਟੈਸਟ
+Comment=Check monitor mode and packet injection of your adapter
+Comment[pa]=ਆਪਣੇ ਅਡੈਪਟਰ ਦਾ ਮਾਨੀਟਰ ਮੋਡ ਅਤੇ ਇੰਜੈਕਸ਼ਨ ਜਾਂਚੋ
+Exec=/usr/local/bin/harpreetlinux-wifitest
+Icon=network-wireless
+Categories=Network;Security;
