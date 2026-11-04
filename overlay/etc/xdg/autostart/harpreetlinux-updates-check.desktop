@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=HarpreetLinux update check
+Exec=/usr/local/bin/harpreetlinux-updates-check
+Icon=harpreetlinux
+X-GNOME-Autostart-enabled=true
